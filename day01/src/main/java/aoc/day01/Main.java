@@ -16,49 +16,13 @@ public class Main {
     }
 
     private static void partOne() {
-        Path path = Paths.get("day01.data.txt");
-        List<Integer> calories = new ArrayList<>();
-        calories.add(0);
-
-        try (BufferedReader bufferedReader = Files.newBufferedReader(path)) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (line.isEmpty()) {
-                    calories.add(0);
-                    continue;
-                }
-                int count = Integer.parseUnsignedInt(line);
-                Integer current = calories.get(calories.size() - 1);
-                current = current + count;
-                calories.set(calories.size() - 1, current);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        List<Integer> calories = getCalories();
         OptionalInt optionalInt = calories.stream().mapToInt(Integer::intValue).max();
         optionalInt.ifPresent(System.out::println);
     }
 
     private static void partTwo() {
-        Path path = Paths.get("day01.data.txt");
-        List<Integer> calories = new ArrayList<>();
-        calories.add(0);
-
-        try (BufferedReader bufferedReader = Files.newBufferedReader(path)) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                if (line.isEmpty()) {
-                    calories.add(0);
-                    continue;
-                }
-                int count = Integer.parseUnsignedInt(line);
-                Integer current = calories.get(calories.size() - 1);
-                current = current + count;
-                calories.set(calories.size() - 1, current);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        List<Integer> calories = getCalories();
         int sumOfTopThree = calories.stream().mapToInt(Integer::intValue)
                 .map(i -> i * -1) //there's no 'IntStream.reverse' method, so first I'm sorting negative valuess
                 .sorted()
@@ -66,5 +30,27 @@ public class Main {
                 .map(i -> i * -1)
                 .sum();
         System.out.println(sumOfTopThree);
+    }
+
+    private static List<Integer> getCalories() {
+        Path path = Paths.get("day01.data.txt");
+        List<Integer> calories = new ArrayList<>();
+        calories.add(0);
+        try (BufferedReader bufferedReader = Files.newBufferedReader(path)) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.isEmpty()) {
+                    calories.add(0);
+                    continue;
+                }
+                int count = Integer.parseUnsignedInt(line);
+                Integer current = calories.get(calories.size() - 1);
+                current = current + count;
+                calories.set(calories.size() - 1, current);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return calories;
     }
 }
