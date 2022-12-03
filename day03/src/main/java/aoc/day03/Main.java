@@ -1,6 +1,5 @@
 package aoc.day03;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.IntStream;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -16,26 +17,32 @@ public class Main {
         partTwo();
     }
 
-    private static void partTwo() throws IOException {
-        Path path = Paths.get("day03.data.txt");
-        BufferedReader bufferedReader = Files.newBufferedReader(path);
-        List<Integer> groupPriorities = new ArrayList<>();
-        String line;
-        List<String> lines = new ArrayList<>();
-        while ((line = bufferedReader.readLine()) != null) {
-            lines.add(line);
-            if (lines.size() == 3) {
-                Integer next = lines.stream().map(Main::getItems).reduce(Main::intersection).get().iterator().next();
-                groupPriorities.add(next);
-                lines.clear();
-            }
-        }
-        System.out.println(groupPriorities.stream().mapToInt(Integer::intValue).sum());
-    }
-
     private static void partOne() throws IOException {
         Path path = Paths.get("day03.data.txt");
         System.out.println(Files.lines(path).mapToInt(Main::prioritizeRearrangement).sum());
+    }
+
+    private static void partTwo() throws IOException {
+        Path path = Paths.get("day03.data.txt");
+        System.out.println(Files.lines(path).flatMapToInt(new GroupPriorityEmitter()).sum());
+    }
+
+    private static class GroupPriorityEmitter implements Function<String, IntStream> {
+
+        private final List<String> lines = new ArrayList<>();
+
+        @Override
+        public IntStream apply(String line) {
+            lines.add(line);
+            if (lines.size() == 3) {
+                Integer next = lines.stream().map(Main::getItems).reduce(Main::intersection).get().iterator().next();
+                lines.clear();
+                return IntStream.of(next);
+            } else {
+                return IntStream.empty();
+            }
+        }
+
     }
 
     private static int prioritizeRearrangement(String line) {
