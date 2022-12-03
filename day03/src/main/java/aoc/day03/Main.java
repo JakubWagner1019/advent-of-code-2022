@@ -35,14 +35,17 @@ public class Main {
         public IntStream apply(String line) {
             lines.add(line);
             if (lines.size() == 3) {
-                Integer next = lines.stream().map(Main::getItems).reduce(Main::intersection).get().iterator().next();
+                int next = getGroupPriority(lines);
                 lines.clear();
                 return IntStream.of(next);
             } else {
                 return IntStream.empty();
             }
         }
+    }
 
+    private static int getGroupPriority(List<String> lines) {
+        return lines.stream().map(Main::getItems).reduce(Main::intersection).get().iterator().next();
     }
 
     private static int prioritizeRearrangement(String line) {
